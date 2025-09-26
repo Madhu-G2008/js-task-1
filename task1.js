@@ -1,4 +1,4 @@
-//task 1//
+
 
 let a='49'
 
@@ -16,7 +16,7 @@ grade='A';
 
 break;
 
-case m1>74:
+case m1>32:
 
 grade='B';
 
@@ -40,9 +40,9 @@ break;}
 
 console.log(grade);
 
-//Task 2//
 
-let x='4';
+
+let x='5';
 
 let n=Number(x)
 
