@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Personal Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #eee;
+      padding: 10px;
+      gap: 20px;
+    }
+    nav button {
+      padding: 10px 15px;
+      border: none;
+      background: #0077cc;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    nav button:hover {
+      background: #005fa3;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    input, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      max-width: 300px;
+    }
+    button.action {
+      margin-top: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button.action:hover {
+      background: #218838;
+    }
+    .output {
+      margin-top: 15px;
+      padding: 10px;
+      background: #fff;
+      border-left: 4px solid #0077cc;
+    }
+    pre {
+      background: #222;
+      color: #0f0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1> Student Personal Dashboard</h1>
+  </header>
+
+  <nav>
+    <button onclick="showSection('profile')">Profile</button>
+    <button onclick="showSection('age')">Age Checker</button>
+    <button onclick="showSection('greeting')">Greeting</button>
+    <button onclick="showSection('calculator')">Calculator</button>
+    <button onclick="showSection('quotes')">Quotes</button>
+  </nav>
+
+  <!-- Profile -->
+  <section id="profile" class="active">
+    <h2>Profile Information</h2>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="number" id="birthYear" placeholder="Enter your birth year">
+    <input type="text" id="city" placeholder="Enter your city">
+    <button class="action" onclick="saveProfile()">Save Profile</button>
+    <div id="profileOutput" class="output"></div>
+    <h3>Profile in JSON</h3>
+    <pre id="jsonOutput"></pre>
+  </section>
+
+  <!-- Age Checker -->
+  <section id="age">
+    <h2>Age Checker</h2>
+    <button class="action" onclick="checkAge()">Check Age</button>
+    <div id="ageOutput" class="output"></div>
+  </section>
+
+  <!-- Greeting -->
+  <section id="greeting">
+    <h2>Greeting</h2>
+    <button class="action" onclick="showGreeting()">Show Greeting</button>
+    <div id="greetingOutput" class="output"></div>
+  </section>
+
+  <!-- Calculator -->
+  <section id="calculator">
+    <h2>Calculator</h2>
+    <input type="number" id="num1" placeholder="Enter first number">
+    <input type="number" id="num2" placeholder="Enter second number">
+    <select id="operation">
+      <option value="add">+</option>
+      <option value="sub">-</option>
+      <option value="mul">×</option>
+      <option value="div">÷</option>
+    </select>
+    <button class="action" onclick="calculate()">Calculate</button>
+    <div id="calcOutput" class="output"></div>
+  </section>
+
+  <!-- Quotes -->
+  <section id="quotes">
+    <h2>Motivational Quote</h2>
+    <button class="action" onclick="showQuote()">Get Random Quote</button>
+    <div id="quoteOutput" class="output"></div>
+  </section>
+
+  <script>
+    let student = { name: "", birthYear: null, city: "" };
+
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function saveProfile() {
+      try {
+        let name = document.getElementById("name").value.trim();
+        let birthYear = parseInt(document.getElementById("birthYear").value);
+        let city = document.getElementById("city").value.trim();
+
+        if (!name || !birthYear || !city) throw "All fields are required!";
+        if (isNaN(birthYear) || birthYear < 1900) throw "Enter a valid birth year.";
+
+        student.name = name;
+        student.birthYear = birthYear;
+        student.city = city;
+
+        document.getElementById("profileOutput").innerHTML =
+          `<strong>Name:</strong> ${student.name}<br>
+           <strong>City:</strong> ${student.city}`;
+        document.getElementById("jsonOutput").textContent = JSON.stringify(student, null, 2);
+
+      } catch (err) {
+        document.getElementById("profileOutput").innerHTML = `<span style="color:red;">Error: ${err}</span>`;
+      }
+    }
+
+    function checkAge() {
+      try {
+        if (!student.birthYear) throw "Please save your profile first!";
+        let currentYear = new Date().getFullYear();
+        let age = currentYear - student.birthYear;
+        let eligibility = age >= 18 ? "✅ You are eligible (18+)." : "❌ You are not eligible (below 18).";
+        document.getElementById("ageOutput").innerHTML = `Your age is <b>${age}</b>. ${eligibility}`;
+      } catch (err) {
+        document.getElementById("ageOutput").innerHTML = `<span style="color:red;">Error: ${err}</span>`;
+      }
+    }
+
+    function showGreeting() {
+      let now = new Date();
+      let hour = now.getHours();
+      let greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+      let name = student.name ? student.name : "Student";
+      document.getElementById("greetingOutput").innerHTML = `${greeting}, <b>${name}</b>!`;
+    }
+
+    function calculate() {
+      try {
+        let num1 = parseFloat(document.getElementById("num1").value);
+        let num2 = parseFloat(document.getElementById("num2").value);
+        let operation = document.getElementById("operation").value;
+
+        if (isNaN(num1) || isNaN(num2)) throw "Enter valid numbers.";
+
+        let result;
+        switch (operation) {
+          case "add": result = num1 + num2; break;
+          case "sub": result = num1 - num2; break;
+          case "mul": result = num1 * num2; break;
+          case "div":
+            if (num2 === 0) throw "Division by zero not allowed!";
+            result = num1 / num2; break;
+        }
+
+        document.getElementById("calcOutput").innerHTML = `Result: <b>${result}</b>`;
+      } catch (err) {
+        document.getElementById("calcOutput").innerHTML = `<span style="color:red;">Error: ${err}</span>`;
+      }
+    }
+
+    function showQuote() {
+      const quotes = [
+        "Believe in yourself and all that you are.",
+        "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+        "Don’t watch the clock; do what it does. Keep going.",
+        "The future depends on what you do today.",
+        "Dream big and dare to fail."
+      ];
+      let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("quoteOutput").innerHTML = `"${randomQuote}"`;
+    }
+  </script>
+
+</body>
+</html>

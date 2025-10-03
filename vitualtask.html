@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basic Event Registration & Quiz</title>
+</head>
+<body>
+  <h2>Event Registration</h2>
+
+  <!-- Registration -->
+  <div id="registration">
+    <label>Name:</label>
+    <input type="text" id="name"><br><br>
+    <label>Email:</label>
+    <input type="text" id="email"><br><br>
+    <label>Age:</label>
+    <input type="number" id="age"><br><br>
+    <button onclick="register()">Register</button>
+    <p id="regError" style="color:red;"></p>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz" style="display:none;">
+    <h3>Quiz</h3>
+    <form id="quizForm">
+      <p><b>Q1: What is 2 + 2?</b></p>
+      <input type="radio" name="q1" value="3"> 3<br>
+      <input type="radio" name="q1" value="4"> 4<br>
+      <input type="radio" name="q1" value="5"> 5<br>
+
+      <p><b>Q2: Capital of India?</b></p>
+      <input type="radio" name="q2" value="Delhi"> Delhi<br>
+      <input type="radio" name="q2" value="Mumbai"> Mumbai<br>
+      <input type="radio" name="q2" value="Chennai"> Chennai<br>
+
+      <p><b>Q3: Which is a programming language?</b></p>
+      <input type="radio" name="q3" value="HTML"> HTML<br>
+      <input type="radio" name="q3" value="JavaScript"> JavaScript<br>
+      <input type="radio" name="q3" value="CSS"> CSS<br><br>
+
+      <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+    </form>
+  </div>
+
+  <!-- Result -->
+  <div id="result" style="display:none;">
+    <h3>Result</h3>
+    <p><b>Total Marks:</b> <span id="marks"></span></p>
+    <p><b>Percentage:</b> <span id="percent"></span></p>
+    <p><b>Grade:</b> <span id="grade"></span></p>
+  </div>
+
+<script>
+function register() {
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+  let age = document.getElementById("age").value;
+
+  if (name === "" || email === "" || age === "") {
+    document.getElementById("regError").innerText = "All fields are required!";
+  } 
+  else if (age < 12) {
+    document.getElementById("regError").innerText = "Age must be 12 or above!";
+  } 
+  else {
+    document.getElementById("registration").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+  }
+}
+
+function submitQuiz() {
+  let form = document.getElementById("quizForm");
+  let score = 0;
+
+  if (form.q1.value === "4") score++;
+  if (form.q2.value === "Delhi") score++;
+  if (form.q3.value === "JavaScript") score++;
+
+  let percent = (score / 3) * 100;
+  let grade = "";
+
+  if (percent >= 80) grade = "A";
+  else if (percent >= 60) grade = "B";
+  else if (percent >= 40) grade = "C";
+  else grade = "D";
+
+  document.getElementById("marks").innerText = score + "/3";
+  document.getElementById("percent").innerText = percent + "%";
+  document.getElementById("grade").innerText = grade;
+
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("result").style.display = "block";
+}
+</script>
+</body>
+</html>
